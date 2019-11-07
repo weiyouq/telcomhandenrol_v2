@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xs.telcom.handenrol.dao.IUserBusinessDao">
+  <resultMap id="BaseResultMap" type="cn.xs.telcom.handenrol.bean.UserBusiness">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="bu_id" jdbcType="INTEGER" property="buId" />
+    <result column="enrol_touch_id" jdbcType="BIGINT" property="enrolTouchId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, bu_id, enrol_touch_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_business
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_user_business
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.xs.telcom.handenrol.bean.UserBusiness">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_user_business (user_id, bu_id, enrol_touch_id
+      )
+    values (#{userId,jdbcType=BIGINT}, #{buId,jdbcType=INTEGER}, #{enrolTouchId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.xs.telcom.handenrol.bean.UserBusiness">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_user_business
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="buId != null">
+        bu_id,
+      </if>
+      <if test="enrolTouchId != null">
+        enrol_touch_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="buId != null">
+        #{buId,jdbcType=INTEGER},
+      </if>
+      <if test="enrolTouchId != null">
+        #{enrolTouchId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.xs.telcom.handenrol.bean.UserBusiness">
+    update t_user_business
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="buId != null">
+        bu_id = #{buId,jdbcType=INTEGER},
+      </if>
+      <if test="enrolTouchId != null">
+        enrol_touch_id = #{enrolTouchId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.xs.telcom.handenrol.bean.UserBusiness">
+    update t_user_business
+    set user_id = #{userId,jdbcType=BIGINT},
+      bu_id = #{buId,jdbcType=INTEGER},
+      enrol_touch_id = #{enrolTouchId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

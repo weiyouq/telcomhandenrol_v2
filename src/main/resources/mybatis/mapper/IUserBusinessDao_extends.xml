@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xs.telcom.handenrol.dao.IUserBusinessDao">
+  <select id="selectUserByUserIdAndBuId" resultMap="BaseResultMap">
+    select id, user_id, bu_id
+    from t_user_business
+    where user_id = #{userID} AND bu_id = #{buID}
+  </select>
+  <delete id="deleteByUserIdAndBuId">
+    delete from t_user_business where user_id =#{userID,jdbcType=BIGINT} and bu_id =#{buID,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertList" parameterType="java.util.List">
+    insert ignore into t_user_business (user_id, bu_id, enrol_touch_id) values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+        (select id from t_enrols where user_id=#{item.userNo} and enrol_type=0),
+        (select id from t_business where bu_no=#{item.buNo}),
+        (select id from t_enrol_touch where audio_path=#{item.audioPath})
+      )
+    </foreach>
+  </insert>
+</mapper>

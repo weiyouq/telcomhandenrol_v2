@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xs.telcom.handenrol.dao.IEnrolTouchDao">
+  <resultMap id="BaseResultMap" type="cn.xs.telcom.handenrol.bean.EnrolTouch">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="audio_path" jdbcType="VARCHAR" property="audioPath" />
+    <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+    <result column="download_status" jdbcType="INTEGER" property="downloadStatus" />
+    <result column="download_date" jdbcType="TIMESTAMP" property="downloadDate" />
+    <result column="download_error" jdbcType="VARCHAR" property="downloadError" />
+    <result column="enrol_status" jdbcType="INTEGER" property="enrolStatus" />
+    <result column="enrol_date" jdbcType="TIMESTAMP" property="enrolDate" />
+    <result column="enrol_error" jdbcType="VARCHAR" property="enrolError" />
+    <result column="enrol_record" jdbcType="INTEGER" property="enrolRecord" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, audio_path, create_date, download_status, download_date, download_error, enrol_status, 
+    enrol_date, enrol_error,enrol_record
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_enrol_touch
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_enrol_touch
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.xs.telcom.handenrol.bean.EnrolTouch">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_enrol_touch (audio_path, create_date, download_status, 
+      download_date, download_error, enrol_status,
+      enrol_date, enrol_error, enrol_record)
+    values (#{audioPath,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR}, #{downloadStatus,jdbcType=INTEGER}, 
+      #{downloadDate,jdbcType=TIMESTAMP}, #{downloadError,jdbcType=VARCHAR}, #{enrolStatus,jdbcType=INTEGER}, 
+      #{enrolDate,jdbcType=TIMESTAMP}, #{enrolError,jdbcType=VARCHAR}, #{enrolRecord,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.xs.telcom.handenrol.bean.EnrolTouch">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_enrol_touch
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="audioPath != null">
+        audio_path,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="downloadStatus != null">
+        download_status,
+      </if>
+      <if test="downloadDate != null">
+        download_date,
+      </if>
+      <if test="downloadError != null">
+        download_error,
+      </if>
+      <if test="enrolStatus != null">
+        enrol_status,
+      </if>
+      <if test="enrolDate != null">
+        enrol_date,
+      </if>
+      <if test="enrolError != null">
+        enrol_error,
+      </if>
+      <if test="enrolRecord != null">
+        enrol_record,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="audioPath != null">
+        #{audioPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+      <if test="downloadStatus != null">
+        #{downloadStatus,jdbcType=INTEGER},
+      </if>
+      <if test="downloadDate != null">
+        #{downloadDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downloadError != null">
+        #{downloadError,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolStatus != null">
+        #{enrolStatus,jdbcType=INTEGER},
+      </if>
+      <if test="enrolDate != null">
+        #{enrolDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enrolError != null">
+        #{enrolError,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolRecord != null">
+        #{enrol_record,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.xs.telcom.handenrol.bean.EnrolTouch">
+    update t_enrol_touch
+    <set>
+      <if test="audioPath != null">
+        audio_path = #{audioPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+      <if test="downloadStatus != null">
+        download_status = #{downloadStatus,jdbcType=INTEGER},
+      </if>
+      <if test="downloadDate != null">
+        download_date = #{downloadDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downloadError != null">
+        download_error = #{downloadError,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolStatus != null">
+        enrol_status = #{enrolStatus,jdbcType=INTEGER},
+      </if>
+      <if test="enrolDate != null">
+        enrol_date = #{enrolDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enrolError != null">
+        enrol_error = #{enrolError,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolRecord != null">
+        enrol_record = #{enrolRecord,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.xs.telcom.handenrol.bean.EnrolTouch">
+    update t_enrol_touch
+    set audio_path = #{audioPath,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=VARCHAR},
+      download_status = #{downloadStatus,jdbcType=INTEGER},
+      download_date = #{downloadDate,jdbcType=TIMESTAMP},
+      download_error = #{downloadError,jdbcType=VARCHAR},
+      enrol_status = #{enrolStatus,jdbcType=INTEGER},
+      enrol_date = #{enrolDate,jdbcType=TIMESTAMP},
+      enrol_error = #{enrolError,jdbcType=VARCHAR}
+      enrol_record = #{enrolRecord,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

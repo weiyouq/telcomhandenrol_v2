@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xs.telcom.handenrol.dao.IUserDao">
+  <select id="selectUserByType" resultMap="BaseResultMap">
+    select id, user_id, enrol_type, used_user_id, user_state
+    from t_enrols
+    where
+    user_id=#{userId,jdbcType=VARCHAR} AND enrol_type =#{enrolType,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insertList" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+    INSERT IGNORE INTO t_enrols (user_id, enrol_type, user_state) VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+        #{item.userId},#{item.enrolType},#{item.userState}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateByList" parameterType="java.util.List">
+    UPDATE t_enrols SET
+    <foreach collection="list" item="item" index="index" open="user_id =case" close="end,">
+      WHEN id=#{item.userId} then #{item.userNo}
+    </foreach>
+    <foreach collection="list" item="item" index="index" open="used_user_id =case" close="end,">
+      WHEN id=#{item.userId} then #{item.usedUserId}
+    </foreach>
+    <trim suffixOverrides=",">
+      <foreach collection="list" item="item" index="index" open="user_state =case" close="end,">
+        WHEN id=#{item.userId} then #{item.userState}
+      </foreach>
+    </trim>
+    WHERE
+    id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.userId}
+    </foreach>
+  </update>
+
+</mapper>

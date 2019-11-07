@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xs.telcom.handenrol.dao.IEnrolTouchDao">
+
+  <!-- 批量添加注册声纹信息 -->
+  <insert id="insertList" parameterType="java.util.List">
+    INSERT IGNORE INTO t_enrol_touch (audio_path, create_date,
+    download_status,
+    download_date, download_error,
+    enrol_status,
+    enrol_date, enrol_error) VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+        #{item.audioPath},#{item.createDate},
+        <choose>
+          <when test="item.downloadStatus != null">
+            #{item.downloadStatus},
+          </when>
+          <otherwise>
+            0,
+          </otherwise>
+        </choose>
+        #{item.downloadDate},
+        #{item.downloadError},
+        <choose>
+          <when test="item.enrolStatus != null">
+            #{item.enrolStatus},
+          </when>
+          <otherwise>
+            0,
+          </otherwise>
+        </choose>
+        #{item.enrolDate},#{item.enrolError}
+      )
+    </foreach>
+  </insert>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+      id, audio_path, create_date, download_status, download_date, download_error,
+      enrol_status, enrol_date, enrol_error,enrol_record
+    from
+      t_enrol_touch
+    WHERE download_status=0 ORDER BY id LIMIT 0,#{size}
+  </select>
+
+  <update id="updateByList" parameterType="java.util.List">
+    UPDATE t_enrol_touch SET
+    <foreach collection="list" item="item" index="index" open="create_date =case" close="end,">
+      WHEN id=#{item.id} then #{item.createDate}
+    </foreach>
+    <foreach collection="list" item="item" index="index" open="download_status =case" close="end,">
+      WHEN id=#{item.id} then #{item.downloadStatus}
+    </foreach>
+    <foreach collection="list" item="item" index="index" open="download_date =case" close="end,">
+      WHEN id=#{item.id} then #{item.downloadDate}
+    </foreach>
+    <foreach collection="list" item="item" index="index" open="download_error =case" close="end,">
+      WHEN id=#{item.id} then #{item.downloadError}
+    </foreach>
+    <foreach collection="list" item="item" index="index" open="enrol_status =case" close="end,">
+      WHEN id=#{item.id} then #{item.enrolStatus}
+    </foreach>
+    <foreach collection="list" item="item" index="index" open="enrol_date =case" close="end,">
+      WHEN id=#{item.id} then #{item.enrolDate}
+    </foreach>
+    <foreach collection="list" item="item" index="index" open="enrol_record =case" close="end,">
+      WHEN id=#{item.id} then #{item.enrolRecord}
+    </foreach>
+    <trim suffixOverrides=",">
+      <foreach collection="list" item="item" index="index" open="enrol_error =case" close="end,">
+        WHEN id=#{item.id} then #{item.enrolError}
+      </foreach>
+    </trim>
+    WHERE
+    id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </update>
+
+  <update id="updateDownloadStatusByIds" parameterType="java.util.List">
+    UPDATE t_enrol_touch SET download_status = 1
+    WHERE
+    id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </update>
+
+  <update id="updateAudioBean" parameterType="cn.xs.telcom.handenrol.bean.AudioBean">
+    update t_enrol_touch
+    <set>
+      <if test="audioPath != null">
+        audio_path = #{audioPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+      <if test="downloadStatus != null">
+        download_status = #{downloadStatus,jdbcType=INTEGER},
+      </if>
+      <if test="downloadDate != null">
+        download_date = #{downloadDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downloadError != null">
+        download_error = #{downloadError,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolStatus != null">
+        enrol_status = #{enrolStatus,jdbcType=INTEGER},
+      </if>
+      <if test="enrolDate != null">
+        enrol_date = #{enrolDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enrolError != null">
+        enrol_error = #{enrolError,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolRecord != null">
+        enrol_record = #{enrolRecord,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--<select id="selectIfTodayEnrolled" resultMap="BaseResultMap">
+    SELECT
+    id, user_id, audio_path, create_date, download_status, download_date, download_error,
+    enrol_status, enrol_date, enrol_error
+    FROM
+    t_enrol_touch
+    WHERE user_id =#{id} AND enrol_status=2 AND DATE_FORMAT(create_date ,'%Y%m%d') = #{date}
+  </select>
+-->
+  <select id="getAudioList" resultMap="BaseResultMap">
+    SELECT
+    m.id, m.audio_path, m.create_date, m.download_status, m.download_date, m.download_error,
+    m.enrol_status, m.enrol_date, m.enrol_error,m.enrol_record, k.id userId, k.user_id userNo, k.used_user_id usedUserId,
+    k.user_state userState, h.id buId, h.bu_no buNo
+    FROM t_enrol_touch m
+    LEFT JOIN
+    t_user_business n
+    ON
+    m.id=n.enrol_touch_id
+    LEFT JOIN
+    t_enrols k
+    ON
+    n.user_id = k.id
+    LEFT JOIN
+    t_business h
+    ON
+    n.bu_id = h.id
+    where
+    m.create_date = #{queryDate} and
+    <if test='size > 1'>
+      m.id % ${size} = ${appId} and
+    </if>
+    m.download_status=0 and m.enrol_status=0
+    order by m.id asc limit 0,1000
+  </select>
+
+  <select id="getEnrolTouchByDate" resultMap="BaseResultMap">
+    select
+    id
+    from t_enrol_touch
+    where
+    create_date = #{date}
+  </select>
+
+</mapper>
