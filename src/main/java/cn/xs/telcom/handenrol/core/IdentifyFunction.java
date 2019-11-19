@@ -48,8 +48,7 @@ public class IdentifyFunction {
         if (enrolResultMap.containsKey("result") && !enrolResultMap.containsKey("errorData")){
 
             //调用1vs1删除模型
-            HttpUtils.doPost(uaEnrolUrl, UAFunction.deletePayload(useToEnrolNo));
-
+            UAFunction.doDelete(uaEnrolUrl, UAFunction.deletePayload(useToEnrolNo));
             //解析verifyResult，得到信噪比值
             Object o = JSONObject.fromObject(enrolResultMap.get("result")).get("metaInformation");
             JSONArray jsonArray = JSONArray.fromObject(o);

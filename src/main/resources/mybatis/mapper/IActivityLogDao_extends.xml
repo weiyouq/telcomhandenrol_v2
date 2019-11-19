@@ -43,10 +43,10 @@
         category,
         create_date,
         result
-    )
+    ) values
     <foreach collection="list" item="item" index="index" separator=",">
-      <trim prefix="values (" suffix=")" suffixOverrides=",">
-          (SELECT id FROM t_enrols WHERE user_id =#{item.userNo,jdbcType=VARCHAR}),
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          (SELECT id FROM t_enrols WHERE user_id =#{item.userNo,jdbcType=VARCHAR} and enrol_type=1 ),
           (SELECT id FROM t_business WHERE bu_no =#{item.buNo}),
           #{item.voiceLocation,jdbcType=VARCHAR},
           #{item.category,jdbcType=INTEGER},

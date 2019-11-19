@@ -106,6 +106,12 @@ public class UAFunction {
         // 得到声纹验证payload
         return PayloadUtils.enrolOrVerifyPayload(logName, userNo, base64);
     }
+
+    public static String doDelete(String deleteUrl, String deletePayload) throws Exception{
+        String deleteResult = HttpUtils.doPost(deleteUrl, deletePayload);
+        return deletePayload;
+    }
+
     /**
      * 删除payload
      * @param useToEnrolNo

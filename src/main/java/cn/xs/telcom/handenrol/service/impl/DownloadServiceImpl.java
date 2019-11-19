@@ -161,7 +161,7 @@ public class DownloadServiceImpl implements IDownlaodService {
             String replaceAll = pathAndFileName.replaceAll("/", "_");
             //临时存放音频文件名、目录
             String path = System.getProperty("user.dir") + "/temp/";
-            String pcmPath = path + replaceAll + ".pcm";
+            String pcmPath = path + replaceAll;
             ;
             String wavPath = path + replaceAll + ".wav";
             logger.info("待处理音频文件路径为：" + pcmPath);
